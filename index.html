@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Video Explainer Generator - AI Powered</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #e2e8f0;
+      --text-light: #94a3b8;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(90deg, #a78bfa, #6366f1, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle {
+      color: var(--text-light);
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    .input-section {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      margin-bottom: 2rem;
+    }
+    .topic-input {
+      width: 100%;
+      padding: 16px 20px;
+      font-size: 1.1rem;
+      background: #0f172a;
+      border: 2px solid #334155;
+      border-radius: 12px;
+      color: white;
+      margin-bottom: 1.5rem;
+      resize: none;
+    }
+    .topic-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.3);
+    }
+    .generate-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 16px 32px;
+      font-size: 1.2rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: 100%;
+      font-weight: bold;
+    }
+    .generate-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    .generate-btn:disabled {
+      background: #475569;
+      cursor: not-allowed;
+    }
+    .topics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    .topic-chip {
+      background: #334155;
+      padding: 12px 18px;
+      border-radius: 999px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 500;
+    }
+    .topic-chip:hover {
+      background: var(--primary);
+      transform: scale(1.05);
+    }
+    #result-section {
+      margin-top: 3rem;
+      display: none;
+    }
+    .video-container {
+      background: #000;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      margin-bottom: 2rem;
+    }
+    video {
+      width: 100%;
+      display: block;
+    }
+    .loading {
+      text-align: center;
+      font-size: 1.3rem;
+      padding: 3rem;
+      color: var(--text-light);
+    }
+    .footer {
+      text-align: center;
+      margin-top: 4rem;
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Video Explainer Generator</h1>
+      <p class="subtitle">Transform any topic into engaging explainer videos with AI ✨</p>
+    </header>
+
+    <div class="input-section">
+      <textarea 
+        id="topicInput" 
+        class="topic-input" 
+        rows="4" 
+        placeholder="e.g. What is Photosynthesis? Explain in simple terms..."
+      ></textarea>
+
+      <button id="generateBtn" class="generate-btn">
+        <i class="fas fa-rocket"></i> Generate Explainer Video
+      </button>
+
+      <div class="topics-grid">
+        <div class="topic-chip" data-topic="How does photosynthesis work?">Photosynthesis</div>
+        <div class="topic-chip" data-topic="Explain Blockchain in simple terms">Blockchain</div>
+        <div class="topic-chip" data-topic="What is Machine Learning?">Machine Learning</div>
+        <div class="topic-chip" data-topic="Human heart working animation">Heart Anatomy</div>
+      </div>
+    </div>
+
+    <div id="result-section">
+      <h2 style="text-align:center; margin-bottom:1.5rem;">Your Explainer Video</h2>
+      <div class="video-container">
+        <div id="loading" class="loading">Generating your video... Please wait ⏳</div>
+        <video id="generatedVideo" controls style="display:none;"></video>
+      </div>
+      <p style="text-align:center; color:var(--text-light);">
+        (This is a demo — real AI generation needs backend API like Replicate / HuggingFace)
+      </p>
+    </div>
+
+    <div class="footer">
+      Made with ❤️ • Open for contributions on GitHub
+    </div>
+  </div>
+
+  <script>
+    const topicInput = document.getElementById('topicInput');
+    const generateBtn = document.getElementById('generateBtn');
+    const resultSection = document.getElementById('result-section');
+    const loading = document.getElementById('loading');
+    const videoEl = document.getElementById('generatedVideo');
+
+    // Quick topic chips
+    document.querySelectorAll('.topic-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        topicInput.value = chip.dataset.topic;
+      });
+    });
+
+    generateBtn.addEventListener('click', () => {
+      const topic = topicInput.value.trim();
+      if (!topic) {
+        alert("Please enter a topic!");
+        return;
+      }
+
+      generateBtn.disabled = true;
+      generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+      resultSection.style.display = 'block';
+      loading.style.display = 'block';
+      videoEl.style.display = 'none';
+
+      // Simulate AI generation delay (in real app → call API here)
+      setTimeout(() => {
+        // For demo: show a sample educational video (replace with your API result)
+        const sampleVideoUrl = "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4";
+
+        videoEl.src = sampleVideoUrl;
+        videoEl.load();
+        videoEl.style.display = 'block';
+        loading.style.display = 'none';
+
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = '<i class="fas fa-rocket"></i> Generate Explainer Video';
+      }, 3500); // 3.5 sec fake delay
+    });
+  </script>
+</body>
+  </html>
