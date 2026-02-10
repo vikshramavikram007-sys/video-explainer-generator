@@ -115,10 +115,6 @@
       box-shadow: 0 20px 40px rgba(0,0,0,0.5);
       margin-bottom: 2rem;
     }
-    video {
-      width: 100%;
-      display: block;
-    }
     .loading {
       text-align: center;
       font-size: 1.3rem;
@@ -137,7 +133,7 @@
   <div class="container">
     <header>
       <h1>Video Explainer Generator</h1>
-      <p class="subtitle">Transform any topic into engaging explainer videos with AI ✨</p>
+      <p class="subtitle">Transform any topic into engaging explainer videos with AI ✨ (Free via Hailuo AI)</p>
     </header>
 
     <div class="input-section">
@@ -149,7 +145,7 @@
       ></textarea>
 
       <button id="generateBtn" class="generate-btn">
-        <i class="fas fa-rocket"></i> Generate Explainer Video
+        <i class="fas fa-rocket"></i> Generate Explainer Video (Free)
       </button>
 
       <div class="topics-grid">
@@ -161,18 +157,18 @@
     </div>
 
     <div id="result-section">
-      <h2 style="text-align:center; margin-bottom:1.5rem;">Your Explainer Video</h2>
+      <h2 style="text-align:center; margin-bottom:1.5rem;">Generate Your Video</h2>
       <div class="video-container">
-        <div id="loading" class="loading">Generating your video... Please wait ⏳</div>
-        <video id="generatedVideo" controls style="display:none;"></video>
+        <div id="loading" class="loading">Opening free AI tool in new tab... Please generate there! 🎥</div>
       </div>
       <p style="text-align:center; color:var(--text-light);">
-        (This is a demo — real AI generation needs backend API like Replicate / HuggingFace)
+        Using Hailuo AI • 100 free credits daily • 2-5 short explainer videos free per day<br>
+        (No watermark in many cases • Signup quick & free)
       </p>
     </div>
 
     <div class="footer">
-      Made with ❤️ • Open for contributions on GitHub
+      Made with ❤️ • Powered by Hailuo AI • Open for contributions on GitHub
     </div>
   </div>
 
@@ -181,7 +177,6 @@
     const generateBtn = document.getElementById('generateBtn');
     const resultSection = document.getElementById('result-section');
     const loading = document.getElementById('loading');
-    const videoEl = document.getElementById('generatedVideo');
 
     // Quick topic chips
     document.querySelectorAll('.topic-chip').forEach(chip => {
@@ -198,25 +193,30 @@
       }
 
       generateBtn.disabled = true;
-      generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+      generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Opening Tool...';
+
+      // Prepare enhanced prompt for better explainer results
+      const enhancedPrompt = topic + " , simple educational explainer animation, clear diagrams, step by step explanation, high quality, smooth motion, no text overlay, 6 seconds";
+
+      // Hailuo create page (prompt parameter doesn't work reliably, so open base page)
+      const toolUrl = "https://hailuoai.video/create";
+
+      // Show alert with prompt ready to paste
+      alert("Redirecting to Hailuo AI (Free Tool)!\n\nCopy this prompt and paste it there:\n\n" + enhancedPrompt + "\n\nYou get 100 free credits daily → 2-5 short videos free. Quick signup if first time.");
+
+      // Open in new tab
+      window.open(toolUrl, '_blank');
+
+      // Show feedback in app
       resultSection.style.display = 'block';
-      loading.style.display = 'block';
-      videoEl.style.display = 'none';
+      loading.innerHTML = "Hailuo AI opened in new tab!<br>Paste the prompt & generate → Download free video.<br>Daily free credits reset every day 🎉";
 
-      // Simulate AI generation delay (in real app → call API here)
+      // Reset button after delay
       setTimeout(() => {
-        // For demo: show a sample educational video (replace with your API result)
-        const sampleVideoUrl = "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4";
-
-        videoEl.src = sampleVideoUrl;
-        videoEl.load();
-        videoEl.style.display = 'block';
-        loading.style.display = 'none';
-
         generateBtn.disabled = false;
-        generateBtn.innerHTML = '<i class="fas fa-rocket"></i> Generate Explainer Video';
-      }, 3500); // 3.5 sec fake delay
+        generateBtn.innerHTML = '<i class="fas fa-rocket"></i> Generate Explainer Video (Free)';
+      }, 4000);
     });
   </script>
 </body>
-  </html>
+</html>
